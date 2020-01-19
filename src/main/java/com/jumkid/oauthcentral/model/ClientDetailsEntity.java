@@ -3,6 +3,7 @@ package com.jumkid.oauthcentral.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClientDetailsEntity {
 
     @Id
@@ -33,7 +35,7 @@ public class ClientDetailsEntity {
     @Column(name = "authorized_grant_types")
     private String authorizedGrantTypes;
 
-    @Column(name = "webServer_redirect_uri")
+    @Column(name = "web_server_redirect_uri")
     private String webServerRedirectUri;
 
     @Column(name = "authorities")

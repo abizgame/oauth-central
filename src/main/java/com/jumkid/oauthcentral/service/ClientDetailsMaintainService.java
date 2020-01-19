@@ -5,6 +5,7 @@ import com.jumkid.oauthcentral.exception.DataMutationException;
 import com.jumkid.oauthcentral.exception.DataNotFoundException;
 import com.jumkid.oauthcentral.model.ClientDetailsEntity;
 import com.jumkid.oauthcentral.model.mapper.ClientDetailsMapper;
+import com.jumkid.oauthcentral.model.mapper.ListClientDetailsMapper;
 import com.jumkid.oauthcentral.repository.ClientDetailsRepository;
 import com.jumkid.oauthcentral.utils.ClientDetailsField;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class ClientDetailsService {
+public class ClientDetailsMaintainService {
 
     private final ClientDetailsMapper clientDetailsMapper = Mappers.getMapper(ClientDetailsMapper.class);
 
@@ -27,13 +29,13 @@ public class ClientDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientDetailsService(ClientDetailsRepository clientDetailsRepository, PasswordEncoder passwordEncoder) {
+    public ClientDetailsMaintainService(ClientDetailsRepository clientDetailsRepository, PasswordEncoder passwordEncoder) {
         this.clientDetailsRepository = clientDetailsRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<String> getSingleFieldOfAll(ClientDetailsField clientDetailsField) {
-        return clientDetailsRepository.getSingleFieldOfAllClientDetails(clientDetailsField.columnName());
+    public List<ClientDetails> getAll() {
+        return Mappers.getMapper(ListClientDetailsMapper.class).entitiesToDTOS(clientDetailsRepository.findAll());
     }
 
     public ClientDetails getClientDetails(Integer clientDetailsId) {
@@ -68,6 +70,22 @@ public class ClientDetailsService {
             }
         } catch (Exception e) {
             log.error("Failed to update ClientDetails {}", e.getMessage());
+            throw new DataMutationException(ClientDetails.ENTITY_NAME);
+        }
+    }
+
+    public ClientDetails patchClientDetails(Integer clientDetailsId, Map<String, Object> updatesMap) {
+        try {
+            ClientDetailsEntity oldClientDetails = this.fetchClientDetailsEntity(clientDetailsId).orElse(null);
+            if (oldClientDetails != null) {
+                ClientDetailsEntity patchedClientDetails = clientDetailsMapper.updatesMapToEntity(updatesMap, oldClientDetails);
+
+                return clientDetailsMapper.entityToDTO(clientDetailsRepository.save(patchedClientDetails));
+            } else {
+                throw new DataNotFoundException(ClientDetails.ENTITY_NAME, clientDetailsId);
+            }
+        } catch (Exception e) {
+            log.error("Failed to patch ClientDetails {}", e.getMessage());
             throw new DataMutationException(ClientDetails.ENTITY_NAME);
         }
     }

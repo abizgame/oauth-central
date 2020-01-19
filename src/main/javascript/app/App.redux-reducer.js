@@ -4,23 +4,23 @@ const clientDetailsReducer = ( state = {}, action )=> {
 
     const newState = {
         ...state
-    }
+    };
 
     switch (action.type) {
-        case actionTypes.CHANGE_CLIENT_ID:
+        case actionTypes.CHANGE_CLIENT_DETAILS_ID:
             return {
                 ...state,
-                clientId: action.clientId
+                clientDetailsId: action.clientDetailsId
             };
         default: return newState;
     }
-}
+};
 
 const userReducer = ( state = {}, action )=> {
 
     const newState = {
         ...state
-    }
+    };
 
     switch (action.type) {
         case actionTypes.CHANGE_USERNAME:
@@ -30,7 +30,7 @@ const userReducer = ( state = {}, action )=> {
             };
         default: return newState;
     }
-}
+};
 
 export {
     clientDetailsReducer,

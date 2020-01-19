@@ -29,7 +29,7 @@ const useStyle = makeStyles( theme => ({
         height: '0.7em',
         marginRight: theme.spacing(1)
     }
-}))
+}));
 
 const ClientDetailsMaster = ({cid}) => {
     const classes = useStyle();
@@ -39,7 +39,7 @@ const ClientDetailsMaster = ({cid}) => {
 
     const fetchData = () => {
         if(!_.isNil(cid)) {
-            fetch("/clientdetails/" + cid)
+            fetch("/client-details/" + cid)
                 .then( resp => resp.json() )
                 .then(resp => {
                     if(resp.success){
@@ -49,7 +49,7 @@ const ClientDetailsMaster = ({cid}) => {
                 })
                 .catch(err => console.error(err));
         }
-    }
+    };
 
     useEffect(() => {
         fetchData();
@@ -60,13 +60,13 @@ const ClientDetailsMaster = ({cid}) => {
         setExisting(false);
         updateClientDetails(null);
         updateDeltaChange({});
-    }
+    };
 
     const doSave = () => {
         if(isExisting) { //update record
             console.debug("save updated record", deltaChange);
-            fetch("/clientdetails/" + cid, {
-                method: 'put',
+            fetch("/client-details/" + cid, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -76,8 +76,8 @@ const ClientDetailsMaster = ({cid}) => {
                 .catch(err => console.log(err));
         } else {  //add new record
             console.debug("save new record");
-            fetch("/clientdetails", {
-                method: 'post',
+            fetch("/client-details", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -87,12 +87,12 @@ const ClientDetailsMaster = ({cid}) => {
                 .catch(err => console.log(err));
         }
 
-    }
+    };
 
     const doDelete = () => {
         console.debug("delete existing record");
-        fetch("/clientdetails/" + cid, {
-            method: 'delete'
+        fetch("/client-details/" + cid, {
+            method: 'DELETE'
         })
             .then( resp => resp.json() )
             .then(resp => {
@@ -103,19 +103,19 @@ const ClientDetailsMaster = ({cid}) => {
                 }
             })
             .catch(err => console.error(err));
-    }
+    };
 
     const handleChange = (target, value) => {
         console.debug("update ", target, " = ", value);
         updateClientDetails({
             ...clientDetails,
             [target]: value
-        })
+        });
         updateDeltaChange({
             ...deltaChange,
             [target]: value
         })
-    }
+    };
 
     return (<ExpansionPanel defaultExpanded={true}>
         <ExpansionPanelSummary
@@ -191,9 +191,9 @@ const ClientDetailsMaster = ({cid}) => {
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={!_.isNil(clientDetails) && !_.isNil(clientDetails.autoapprove) ? clientDetails.autoapprove : false}
-                        onChange={event => handleChange('autoapprove', event.currentTarget.checked)}
-                        value="autoapprove"
+                        checked={!_.isNil(clientDetails) && !_.isNil(clientDetails.autoApprove) ? clientDetails.autoApprove : false}
+                        onChange={event => handleChange('autoApprove', event.currentTarget.checked)}
+                        value="autoApprove"
                     />
                 }
                 label="Autoapprove"
@@ -230,13 +230,13 @@ const ClientDetailsMaster = ({cid}) => {
                 Save</Button>
         </ExpansionPanelActions>
     </ExpansionPanel>)
-}
+};
 
 const mapStateToProps = state => {
     return {
-        cid: state.clientDetails.clientId
+        cid: state.clientDetails.clientDetailsId
     }
-}
+};
 
 export default connect(
     mapStateToProps,

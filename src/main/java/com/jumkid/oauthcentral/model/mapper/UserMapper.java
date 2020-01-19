@@ -1,28 +1,35 @@
 package com.jumkid.oauthcentral.model.mapper;
 
 import com.jumkid.oauthcentral.controller.dto.User;
+import com.jumkid.oauthcentral.model.ClientDetailsEntity;
 import com.jumkid.oauthcentral.model.UserEntity;
+import com.jumkid.oauthcentral.utils.ClientDetailsField;
+import com.jumkid.oauthcentral.utils.UserField;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+
+import java.beans.PropertyDescriptor;
+import java.util.Map;
 
 @Mapper(componentModel="spring")
-public class UserMapper implements CommonMapper<UserEntity, User> {
+public interface UserMapper extends CommonMapper<UserEntity, User> {
 
-    @Override
-    public User entityToDTO(UserEntity entity) {
-        return entity != null ? User.builder()
-                .username(entity.getUsername())
-                .email(entity.getEmail())
-                .active(entity.isActive())
-                .build() : null;
+    @AfterMapping
+    default void blindPassword(UserEntity entity, @MappingTarget User.UserBuilder builder) {
+        builder.password(null);
     }
 
-    @Override
-    public UserEntity dtoToEntity(User dto) {
-        return dto != null ? UserEntity.builder()
-                .username(dto.getUsername())
-                .password(dto.getPassword())
-                .email(dto.getEmail())
-                .active(dto.isActive())
-                .build() : null;
+    default UserEntity updatesMapToEntity(Map<String, Object> updatesMap, UserEntity entity) {
+        updatesMap.entrySet().forEach(entry -> patchEntity(entry, entity));
+        return entity;
     }
+
+    private void patchEntity(Map.Entry entry, UserEntity entity) {
+        UserField field = UserField.of(((String)entry.getKey()));
+        if (entry.getValue() != null && field != null && field != UserField.USERNAME) {
+            callSetter(entity, (String)entry.getKey(), entry.getValue());
+        }
+    }
+
 }

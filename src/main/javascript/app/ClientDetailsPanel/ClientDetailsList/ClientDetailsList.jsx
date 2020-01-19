@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {makeStyles, List, ListItem, ListItemText} from '@material-ui/core';
-import {changeClientId} from "../../App.redux-actions";
+import {changeClientDetailsId} from "../../App.redux-actions";
 import Refetcher from "../../App.refetcher";
 
 const style = makeStyles(theme => ({
@@ -12,30 +12,30 @@ const style = makeStyles(theme => ({
 
 }));
 
-const ListItems = ({ids, cid, showClientDetails}) => {
-    return ids != null ? ids.map(id => <ListItem key={id}
+const ListItems = ({clientDetailsLst, cid, showClientDetails}) => {
+    return clientDetailsLst != null ? clientDetailsLst.map(clientDetails => <ListItem key={clientDetails.id}
                                    button
-                                   selected={cid === id}
-                                   onClick={() => showClientDetails(id)}
+                                   selected={cid === clientDetails.id}
+                                   onClick={() => showClientDetails(clientDetails.id)}
     >
             <ListItemText
-                primary={id}
+                primary={clientDetails.clientId}
             />
-    </ListItem>) : <ListItem><ListItemText primary={"NO DATA"}/></ListItem>
+    </ListItem>) : <ListItem><ListItemText/></ListItem>
 };
 
-const ClientDetailsList = ({cid, changeClientId}) => {
-    const [cidList, setCIDList] = useState([]);
+const ClientDetailsList = ({cid, changeClientDetailsId}) => {
+    const [clientDetailsLst, setList] = useState([]);
     const fetchData = () => {
-        fetch("/clientdetails/allClientIds", {
-            method: 'get',
+        fetch("/client-details", {
+            method: 'GET',
             headers: {
                 'Authorization': 'Basic',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             // body: JSON.stringify({var1: 1, var2: 2})
         }).then( resp => resp.json() )
-            .then(resp => {if(resp.success) setCIDList(resp.data);})
+            .then(resp => {if(resp.success) setList(resp.data);})
             .catch(err => console.log(err));
     };
 
@@ -47,17 +47,17 @@ const ClientDetailsList = ({cid, changeClientId}) => {
 
     const showClientDetails = (cid) => {
         console.log("edit client details", cid);
-        changeClientId(cid);
+        changeClientDetailsId(cid);
     };
 
     return <List>
-        <ListItems ids={cidList} cid={cid} showClientDetails={showClientDetails}/>
+        <ListItems clientDetailsLst={clientDetailsLst} cid={cid} showClientDetails={showClientDetails}/>
     </List>
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        changeClientId: cid => dispatch(changeClientId(cid))
+        changeClientDetailsId: cid => dispatch(changeClientDetailsId(cid))
     }
 };
 

@@ -63,19 +63,17 @@ public class UserController {
         return userService.saveUser(user);
     }
 
-    @PostMapping(value = "/{username}", produces = "application/json")
+    @PutMapping(value = "{username}")
     @ResponseStatus(HttpStatus.OK)
-    public User update(@NotBlank @PathVariable String username,
-                                            @NotNull @RequestBody User user) {
+    public User update(@NotBlank @PathVariable String username, @NotNull @RequestBody User user) {
         return userService.updateUser(username, user);
     }
 
-    @PutMapping(value = "/{username}", produces = "application/json")
+    @PatchMapping(value = "{username}")
     @ResponseStatus(HttpStatus.OK)
-    public CommonResponse updateSingleField(@NotBlank @PathVariable String username,
-                                           @NotNull @RequestBody Map<String, Object> properties) {
-        //TODO
-        return null;
+    public User patch(@PathVariable String username,
+                               @NotNull @RequestBody Map<String, Object> updatesMap) {
+        return userService.patchUser(username, updatesMap);
     }
 
     @DeleteMapping(value = "/{username}")

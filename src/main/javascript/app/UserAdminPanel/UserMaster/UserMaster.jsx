@@ -29,7 +29,7 @@ const useStyle = makeStyles( theme => ({
         height: '0.7em',
         marginRight: theme.spacing(1)
     }
-}))
+}));
 
 const UserMaster = ({username}) => {
     const classes = useStyle();
@@ -39,7 +39,7 @@ const UserMaster = ({username}) => {
 
     const fetchData = () => {
         if(!_.isNil(username)) {
-            fetch("/user/" + username)
+            fetch("/users/" + username)
                 .then( resp => resp.json() )
                 .then(resp => {
                     if(resp.success){
@@ -49,7 +49,7 @@ const UserMaster = ({username}) => {
                 })
                 .catch(err => console.error(err));
         }
-    }
+    };
 
     useEffect(() => {
         fetchData();
@@ -60,13 +60,13 @@ const UserMaster = ({username}) => {
         setExisting(false);
         updateUser(null);
         updateDeltaChange({});
-    }
+    };
 
     const doSave = () => {
         if(isExisting) { //update record
             console.debug("save updated record", deltaChange);
-            fetch("/user/" + username, {
-                method: 'put',
+            fetch("/users/" + username, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -76,8 +76,8 @@ const UserMaster = ({username}) => {
                 .catch(err => console.log(err));
         } else {  //add new record
             console.debug("save new record");
-            fetch("/user", {
-                method: 'post',
+            fetch("/users", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -86,13 +86,12 @@ const UserMaster = ({username}) => {
                 .then(resp => { if(resp.success) Refetcher.runAll(); } )
                 .catch(err => console.log(err));
         }
-
-    }
+    };
 
     const doDelete = () => {
         console.debug("delete existing record");
-        fetch("/user/" + cid, {
-            method: 'delete'
+        fetch("/users/" + cid, {
+            method: 'DELETE'
         })
             .then( resp => resp.json() )
             .then(resp => {
@@ -103,19 +102,19 @@ const UserMaster = ({username}) => {
                 }
             })
             .catch(err => console.error(err));
-    }
+    };
 
     const handleChange = (target, value) => {
         console.debug("update ", target, " = ", value);
         updateUser({
             ...user,
             [target]: value
-        })
+        });
         updateDeltaChange({
             ...deltaChange,
             [target]: value
         })
-    }
+    };
 
     return (<ExpansionPanel defaultExpanded={true}>
         <ExpansionPanelSummary
@@ -164,26 +163,23 @@ const UserMaster = ({username}) => {
         <ExpansionPanelActions>
             <Button size="small"
                     onClick={() => doAddNew()}
-            >
-                Add New</Button>
+            >Add New</Button>
             <Button disabled={!isExisting}
                     size="small"
                     onClick={() => doDelete()}
-            >
-                Delete</Button>
+            >Delete</Button>
             <Button size="small"
                     onClick={() => doSave()}
-            >
-                Save</Button>
+            >Save</Button>
         </ExpansionPanelActions>
     </ExpansionPanel>)
-}
+};
 
 const mapStateToProps = state => {
     return {
         username: state.user.username
     }
-}
+};
 
 export default connect(
     mapStateToProps,

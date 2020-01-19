@@ -29,7 +29,7 @@ const UserList = ({username, changeUsername}) => {
     const [usernameList, setUsernameList] = useState([]);
     const fetchData = () => {
         fetch("/users/field/username", {
-            method: 'get',
+            method: 'GET',
             headers: {
                 'Authorization': 'Basic',
                 'Content-Type': 'application/x-www-form-urlencoded'

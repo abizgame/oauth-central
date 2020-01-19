@@ -28,6 +28,7 @@ public class User {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("active")
     private boolean active;
 
 }

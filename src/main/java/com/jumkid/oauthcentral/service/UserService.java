@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -84,6 +85,22 @@ public class UserService {
             }
         } catch (Exception e) {
             log.error("Failed to update user {}", e.getMessage());
+            throw new DataMutationException(User.ENTITY_NAME);
+        }
+    }
+
+    public User patchUser(String username, Map<String, Object> updatesMap) {
+        try {
+            UserEntity oldUser = fetchUserEntity(username).orElse(null);
+            if (oldUser != null) {
+                UserEntity patchedUser = userMapper.updatesMapToEntity(updatesMap, oldUser);
+
+                return userMapper.entityToDTO(userRepository.save(patchedUser));
+            } else {
+                throw new DataNotFoundException(User.ENTITY_NAME, username);
+            }
+        } catch (Exception e) {
+            log.error("Failed to save user {}", e.getMessage());
             throw new DataMutationException(User.ENTITY_NAME);
         }
     }
