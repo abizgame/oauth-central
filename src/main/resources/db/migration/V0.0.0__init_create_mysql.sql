@@ -29,6 +29,6 @@ CREATE TABLE oauth_client_details (
     access_token_validity INTEGER,
     refresh_token_validity INTEGER,
     additional_information VARCHAR(5000),
-    auto_approve VARCHAR(255)
+    autoapprove VARCHAR(255)
 );
 CREATE UNIQUE INDEX unique_key_client_id ON oauth_client_details(client_id(255));

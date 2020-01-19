@@ -12,7 +12,7 @@ public enum ClientDetailsField {
     ACCESS_TOKEN_VALIDITY("accessTokenValidity", "access_token_validity"),
     REFRESH_TOKEN_VALIDITY("refreshTokenValidity", "refresh_token_validity"),
     ADDITIONAL_INFORMATION("additionalInformation", "additional_information"),
-    AUTO_APPROVE("autoApprove", "auto_approve");
+    AUTO_APPROVE("autoApprove", "autoapprove");
 
     private String value;
     private String columnName;

@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login", "/swagger-ui.html", "/static/**", "/swagger-resources/**")
+                .antMatchers("/login", "/static/**")
                 .permitAll()
                 .anyRequest().authenticated()
             .and()
@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/images/**", "/status");
+        web.ignoring().antMatchers("/images/**", "/status", "/webjars/**", "/swagger-ui.html", "/swagger-resources/**");
     }
 
     @Override

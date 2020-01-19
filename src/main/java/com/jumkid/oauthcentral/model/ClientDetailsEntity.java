@@ -50,7 +50,7 @@ public class ClientDetailsEntity {
     @Column(name = "additional_information")
     private String additionalInformation;
 
-    @Column(name = "auto_approve")
+    @Column(name = "autoapprove")
     private boolean autoApprove;
 
 }
